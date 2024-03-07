@@ -56,14 +56,8 @@ Rotated Fashion MNIST (1 Layer MLP)
 
 ## Getting Started
 
-To begin, clone the repository and install the necessary software libraries, which we have included in the `requirements.txt` file. 
-
-```
-cd diminishing-returns-wide-continual-learning
-
-pip install -r requirements.txt
-
-```
+To begin, first clone the repository. The only external dependencies needed to run the code are PyTorch and
+torchvision, which can be installed following the instructions on the [PyTorch website](https://pytorch.org/)
 
 
 ## Running Experiments
