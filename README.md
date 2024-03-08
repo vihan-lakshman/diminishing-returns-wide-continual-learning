@@ -36,7 +36,7 @@ Rotated MNIST (1 Layer MLP)
 
 Rotated Fashion MNIST (1 Layer MLP)
 
-| Width (Parameters) | AA   | AF   | LA   | JA   |
+| Width | AA   | AF   | LA   | JA   |
 |--------------------|------|------|------|------|
 | 32      | 37.7 | 46.0 | 82.1 | 77.8 |
 | 64      | 37.9 | 46.0 | 82.4 | 80.0 |
