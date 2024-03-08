@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-class SimpleMLP(nn.Module):
+class MLP(nn.Module):
     def __init__(self, input_dim, num_labels, width, num_layers=1):
         super().__init__()
         operations = [nn.Flatten(), nn.Linear(input_dim, width), nn.ReLU()]

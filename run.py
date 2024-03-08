@@ -2,20 +2,15 @@ import argparse
 import logging
 import numpy as np
 import torch
-import torchvision
 import torch.nn as nn
-import torchvision.transforms.functional as TorchVisionFunc
 
-from tqdm import tqdm
-from torch.utils.data import DataLoader
-from torchvision.transforms import ToTensor, Compose
 from data_utils import get_continual_learning_tasks
-from model import SimpleMLP
+from model import MLP
 
 
 def parse_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--task_name", required=True)
+    parser.add_argument("--task_name", choices=['mnist', 'fashion-mnist', 'svhn', 'gtsrb'], required=True)
     parser.add_argument("--width", type=int, required=True)
     parser.add_argument("--num_layers", type=int, required=True)
     parser.add_argument("--seed", type=int, default=42)
@@ -47,7 +42,7 @@ def get_mlp_model(task_name, num_layers, width):
     else:
         input_dim = 3072
     
-    model = SimpleMLP(input_dim, num_labels, width, num_layers)
+    model = MLP(input_dim, num_labels, width, num_layers)
 
     return model
 
