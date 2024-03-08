@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument("--task_name", required=True)
     parser.add_argument("--width", type=int, required=True)
     parser.add_argument("--num_layers", type=int, required=True)
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     return args
 
@@ -61,8 +61,6 @@ def correct(output, target):
 
 def train(data_loader, model, device="cpu"):
     model.train()
-    num_batches = len(data_loader)
-    num_items = len(data_loader.dataset)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01) 
     total_loss = 0
     total_correct = 0
@@ -91,7 +89,6 @@ def train(data_loader, model, device="cpu"):
 
 def test(test_loader, model, device):
     model.eval()
-    num_batches = len(test_loader)
     num_items = len(test_loader.dataset)
 
     test_loss = 0
@@ -118,10 +115,6 @@ def test(test_loader, model, device):
 
 
 def train_continual(datasets, model, device):
-    final_scores = []
-    final_forgetting = []
-    final_learning_acc = []
-
     epochs = 5
     running_test_accs = {i: [] for i in range(5)}
     learning_accs = []
@@ -152,8 +145,8 @@ def train_continual(datasets, model, device):
     return score, forget, learning_acc  
 
 def main():
-    torch.manual_seed(42)
     args = parse_args()
+    torch.manual_seed(args.seed)
     device = set_device()
     datasets = get_continual_learning_tasks(args.task_name)
     model = get_mlp_model(args.task_name, args.num_layers, args.width)
