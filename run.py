@@ -1,3 +1,11 @@
+"""
+This Python script provides a basic continual learning framework for 
+training a model across a sequence of tasks. With the default tasks
+provided in the code, one can reproduce the results in the paper. 
+
+This code is heavily inspired by prior continual learning research 
+from Mirzadeh, et al. https://github.com/imirzadeh/catastrophic-forgetting 
+"""
 import argparse
 import logging
 import numpy as np
@@ -13,6 +21,7 @@ def parse_args():
     parser.add_argument("--task_name", choices=['mnist', 'fashion-mnist', 'svhn', 'gtsrb'], required=True)
     parser.add_argument("--width", type=int, required=True)
     parser.add_argument("--num_layers", type=int, required=True)
+    parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     return args
@@ -48,10 +57,10 @@ def get_mlp_model(task_name, num_layers, width):
 
 
 
-def correct(output, target):
-    predicted_digits = output.argmax(1)                            # pick digit with largest network output
-    correct_ones = (predicted_digits == target).type(torch.float)  # 1.0 for correct, 0.0 for incorrect
-    return correct_ones.sum().item()                               # count number of correct ones
+def compute_accuracy(output, target):
+    predicted_digits = output.argmax(1)                            
+    correct_ones = (predicted_digits == target).type(torch.float) 
+    return correct_ones.sum().item()
 
 
 def train(data_loader, model, device="cpu"):
@@ -74,7 +83,7 @@ def train(data_loader, model, device="cpu"):
         loss = criterion(output, target)
         total_loss += loss
         
-        total_correct += correct(output, target)
+        total_correct += compute_accuracy(output, target)
 
         # Backpropagation
         loss.backward()
@@ -102,20 +111,19 @@ def test(test_loader, model, device):
             test_loss += loss.item()
                                                                             
             # Count number of correct digits
-            total_correct += correct(output, target)
+            total_correct += compute_accuracy(output, target)
 
     accuracy = total_correct/num_items
     
     return accuracy
 
 
-def train_continual(datasets, model, device):
-    epochs = 5
+def train_continual(datasets, model, device, epochs=5):
     running_test_accs = {i: [] for i in range(5)}
     learning_accs = []
     for task_id in range(5):
         train_dataloader = datasets[task_id]['train']
-        for epoch in range(epochs):
+        for _ in range(epochs):
             train(train_dataloader, model, device)
         
         for test_task_id in range(5):   
@@ -148,7 +156,7 @@ def main():
     model.to(device)
     logging.basicConfig(filename=f'{args.task_name}_{args.num_layers}l_{args.width}w.log',filemode='a', encoding='utf-8', level=logging.INFO)
 
-    average_accuracy, average_forgetting, learning_accuracy = train_continual(datasets, model, device)
+    average_accuracy, average_forgetting, learning_accuracy = train_continual(datasets, model, device, args.epochs)
     print(average_accuracy, average_forgetting)
 
     logging.info(f"Width {args.width}: "
