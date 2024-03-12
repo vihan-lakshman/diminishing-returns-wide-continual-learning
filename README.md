@@ -62,7 +62,7 @@ torchvision, which can be installed following the instructions on the [PyTorch w
 
 ## Running Experiments
 
-To reproduce any of the experiments from the paper, execute the `run.py` script and specify the task name, depth, and the layer width. For example
+To reproduce any of the experiments from the paper, execute the `run.py` script and specify the task name, depth, and the layer width. For example:
 
 ```
 python3 run.py --task_name mnist --num_layers 2 --width 1024
@@ -77,3 +77,12 @@ python3 run.py --task_name gtsrb --num_layers 3 --width 256
 ```
 
 ## Citation
+
+```
+@article{guha2024diminishing,
+  title={On the Diminishing Returns of Width for Continual Learning},
+  author={Guha, Etash and Lakshman, Vihan},
+  journal={arXiv preprint arXiv:2403.06398},
+  year={2024}
+}
+```
